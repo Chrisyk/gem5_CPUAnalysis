@@ -1,6 +1,5 @@
 /*  Bubble Sort with reversed array
     Build:  gcc -O2 -static -o sort.elf sort.c            */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

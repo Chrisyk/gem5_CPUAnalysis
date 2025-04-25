@@ -1,6 +1,5 @@
 /*  Single-source Dijkstra with a binary heap.
     Build:  gcc -O2 -static -o dijkstra.elf dijkstra.c            */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>

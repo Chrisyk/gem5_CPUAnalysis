@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+########################
+# This bash script runs all of the tests for gem5
+########################
 set -euo pipefail
 
 GEM5=./build/X86/gem5.opt

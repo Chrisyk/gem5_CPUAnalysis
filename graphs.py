@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+    This generate the graphs from the csv table.
+"""
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path

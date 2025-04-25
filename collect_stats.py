@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+    This gathers the data from the output of the bash script
+    and puts it into a csv file.
+"""
 import re, csv, glob, pathlib
 from collections import defaultdict
 
