@@ -17,6 +17,7 @@ ITERATIONS="200"
 MAX_CYCLES=300000000
 ########################
 # 1.  Single-core sweep
+#     Static or TAGE, 32kb or 128 Kb L1, 256 kB L2
 ########################
 for cpu in "${CPUS_SC[@]}"; do
   for l1 in "${L1SIZES[@]}"; do
@@ -42,53 +43,43 @@ done
 
 
 ######################################
-# 2. Dual-core: parallel matmul (T2)
+# 2. Dual-core: parallel workloads (T2)
+#    static BP, 32 kB L1, 256 kB L2
 ######################################
 CPUS_DC=("TimingSimpleCPU" "DerivO3CPU")
-for cpu in "${CPUS_DC[@]}"; do
-  for l1 in "${L1SIZES[@]}"; do
-    # Always run static; only O3 runs get TAGE
-    BP_FLAGS=("")
-    [[ $cpu == "DerivO3CPU" ]] && BP_FLAGS+=( "--bp-type=TAGE" )
+BENCHES_DC=("sort.elf" "matmul.elf" "dijkstra.elf" "rand.elf")
 
-    for bp in "${BP_FLAGS[@]}"; do
-      tag=$([[ -z $bp ]] && echo static || echo TAGE)
-      RUN_DIR="$OUT_DIR/dual_matmul_${cpu}_l1${l1}_l2256_${tag}"
-      mkdir -p "$RUN_DIR"
-      echo "→ $RUN_DIR"
-      "$GEM5" --outdir="$RUN_DIR" \
-        "$SE" -n 2 --caches --l2cache \
-        --l1d_size=${l1}kB --l1i_size=${l1}kB --l2_size=256kB \
-        --cpu-type="$cpu" $bp \
-        -c "$BIN_DIR/matmul.elf;$BIN_DIR/matmul.elf"
-    done
+for cpu in "${CPUS_DC[@]}"; do
+  for bin in "${BENCHES_DC[@]}"; do
+    base=${bin%.elf}
+    RUN_DIR="$OUT_DIR/dual_${base}_${cpu}_l132_l2256_static"
+    mkdir -p "$RUN_DIR"
+    echo "→ $RUN_DIR"
+    "$GEM5" --outdir="$RUN_DIR" \
+      "$SE" -n 2 --caches --l2cache \
+      --l1d_size=32kB --l1i_size=32kB --l2_size=256kB \
+      --cpu-type="$cpu" \
+      -c "$BIN_DIR/$bin;$BIN_DIR/$bin"
   done
 done
 
 
 #####################################################
-# 3. Dual-core: interference dijkstra + sort (T3)
+# 3. Dual‐core: interference dijkstra + sort (T3)
+#    static BP, 32 kB L1, 256 kB L2
 #####################################################
 CPUS_DC=("TimingSimpleCPU" "DerivO3CPU")
-L2SETS=("256" "1024")
+L2=256
 
 for cpu in "${CPUS_DC[@]}"; do
-  for l2 in "${L2SETS[@]}"; do
-    BP_FLAGS=("")
-    [[ $cpu == "DerivO3CPU" ]] && BP_FLAGS+=( "--bp-type=TAGE" )
-
-    for bp in "${BP_FLAGS[@]}"; do
-      tag=$([[ -z $bp ]] && echo static || echo TAGE)
-      RUN_DIR="$OUT_DIR/dual_interf_${cpu}_l132_l2${l2}_${tag}"
-      mkdir -p "$RUN_DIR"
-      echo "→ $RUN_DIR"
-      "$GEM5" --outdir="$RUN_DIR" \
-        "$SE" -n 2 --caches --l2cache \
-        --l1d_size=32kB --l1i_size=32kB --l2_size=${l2}kB \
-        --cpu-type="$cpu" $bp \
-        -c "$BIN_DIR/dijkstra.elf;$BIN_DIR/sort.elf"
-    done
-  done
+  RUN_DIR="$OUT_DIR/dual_interf_${cpu}_l132_l2${L2}_static"
+  mkdir -p "$RUN_DIR"
+  echo "→ $RUN_DIR"
+  "$GEM5" --outdir="$RUN_DIR" \
+    "$SE" -n 2 --caches --l2cache \
+    --l1d_size=32kB --l1i_size=32kB --l2_size=${L2}kB \
+    --cpu-type="$cpu" \
+    -c "$BIN_DIR/dijkstra.elf;$BIN_DIR/sort.elf"
 done
 
 echo "All simulations submitted."
