@@ -1,8 +1,10 @@
+/*  Random-bit Branch
+    Build:  gcc -O2 -static -o rand.elf rand.c            */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define DEFAULT_N 200
+#define DEFAULT_N 256
 
 int main(int argc, char **argv)
 {

@@ -1,13 +1,15 @@
+/*  Matrix Multiplication
+    Build:  gcc -O2 -static -o matmul.elf matmul.c            */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define SIZE_DEFAULT 256
 
-/* naïve i-jk triple loop */
 static void matmul(const float *A, const float *B, float *C, int n)
 {
-    for (int i = 0; i < n; ++i){
+    for (int i = 0; i < n; ++i)
+    {
         if (i % (n / 10 + 1) == 0)
             printf("[DEBUG] Processing row %d / %d\n", i, n);
         for (int j = 0; j < n; ++j)
@@ -34,7 +36,6 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    /* initialise */
     for (int i = 0; i < N * N; ++i)
     {
         A[i] = (float)(i & 255) * 0.5f;

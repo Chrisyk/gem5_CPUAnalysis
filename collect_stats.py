@@ -1,16 +1,4 @@
-
 #!/usr/bin/env python3
-"""
-collect_stats.py  –  summarise gem5 SE runs
-
-• Scans results/*/stats.txt
-• Extracts per-core IPC, instructions, cache misses, branch mispreds
-• Computes L1-MPKI (always) and miss % (when hits exist)
-• Writes results/summary.csv with extended label parsing
-• Saves quick IPC & MPKI bar charts to results/plots/ if pandas+matplotlib
-  are installed.
-"""
-
 import re, csv, glob, pathlib
 from collections import defaultdict
 

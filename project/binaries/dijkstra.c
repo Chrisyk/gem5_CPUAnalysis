@@ -1,5 +1,5 @@
 /*  Single-source Dijkstra with a binary heap.
-    Build:  gcc -O2 -std=c11 -o dijkstra_sssp.elf dijkstra_sssp.c            */
+    Build:  gcc -O2 -static -o dijkstra.elf dijkstra.c            */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #define INF 1000000000
-#define V_DEFAULT 256 /* default number of vertices */
+#define V_DEFAULT 256
 
 typedef struct
 {
