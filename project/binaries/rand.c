@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define DEFAULT_N 100000000
+#define DEFAULT_N 200
 
 int main(int argc, char **argv)
 {

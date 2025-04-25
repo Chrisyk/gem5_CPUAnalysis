@@ -66,34 +66,16 @@ def parse_stats(path: str) -> dict:
 
     return v
 
-rows = [parse_stats(p) for p in glob.glob("results/*/stats.txt")]
+rows = [parse_stats(p) for p in glob.glob("project/results/*/stats.txt")]
 rows.sort(key=lambda r: r["label"])
 
 cols = ["label", "core_type", "benchmark", "cpu_type", "branch_predictor", "l1_size", "l2_size",
         "ipc0", "ipc1", "sim_sec", "L1_MPKI0", "L1_MPKI1",
         "L1_miss0%", "L1_miss1%", "L2_miss%", "BP_miss0%", "BP_miss1%"]
 
-out_csv = pathlib.Path("results/summary.csv")
+out_csv = pathlib.Path("summary.csv")
 with out_csv.open("w", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
     writer.writeheader()
     writer.writerows(rows)
 print(f"Wrote {out_csv}  ({len(rows)} runs)")
-
-try:
-    import pandas as pd, matplotlib.pyplot as plt
-    df = pd.read_csv(out_csv)
-    plot_dir = pathlib.Path("results/plots"); plot_dir.mkdir(exist_ok=True)
-    ipc_cols = [c for c in ("ipc0", "ipc1") if c in df]
-    if ipc_cols:
-        df.plot.bar(x="label", y=ipc_cols, figsize=(10,4), rot=60)
-        plt.ylabel("IPC"); plt.tight_layout()
-        plt.savefig(plot_dir / "ipc.png", dpi=180); plt.close()
-    mpki_cols = [c for c in ("L1_MPKI0", "L1_MPKI1") if c in df]
-    if mpki_cols:
-        df.plot.bar(x="label", y=mpki_cols, figsize=(10,4), rot=60)
-        plt.ylabel("L1 MPKI"); plt.tight_layout()
-        plt.savefig(plot_dir / "l1_mpki.png", dpi=180); plt.close()
-    print(f"Saved plots to {plot_dir}/")
-except ImportError:
-    print("pandas / matplotlib not installed – CSV written, plots skipped.")

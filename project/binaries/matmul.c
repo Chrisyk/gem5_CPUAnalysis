@@ -7,7 +7,9 @@
 /* naïve i-jk triple loop */
 static void matmul(const float *A, const float *B, float *C, int n)
 {
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i){
+        if (i % (n / 10 + 1) == 0)
+            printf("[DEBUG] Processing row %d / %d\n", i, n);
         for (int j = 0; j < n; ++j)
         {
             float acc = 0.0f;
@@ -15,6 +17,7 @@ static void matmul(const float *A, const float *B, float *C, int n)
                 acc += A[i * n + k] * B[k * n + j];
             C[i * n + j] = acc;
         }
+    }
 }
 
 int main(int argc, char **argv)
