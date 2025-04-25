@@ -35,6 +35,8 @@ for cpu in "${CPUS_SC[@]}"; do
           "$SE" --caches --l2cache \
           --l1d_size=${l1}kB --l1i_size=${l1}kB --l2_size=256kB \
           --cpu-type="$cpu" ${bp:-} \
+          --mem-size=8GB \
+          --options "$ITERATIONS" \
           -c "$BIN_DIR/$bin"
       done
     done
@@ -59,6 +61,8 @@ for cpu in "${CPUS_DC[@]}"; do
       "$SE" -n 2 --caches --l2cache \
       --l1d_size=32kB --l1i_size=32kB --l2_size=256kB \
       --cpu-type="$cpu" \
+      --mem-size=8GB \
+      --options "$ITERATIONS" \
       -c "$BIN_DIR/$bin;$BIN_DIR/$bin"
   done
 done
@@ -79,6 +83,8 @@ for cpu in "${CPUS_DC[@]}"; do
     "$SE" -n 2 --caches --l2cache \
     --l1d_size=32kB --l1i_size=32kB --l2_size=${L2}kB \
     --cpu-type="$cpu" \
+    --mem-size=8GB \
+    --options "$ITERATIONS" \
     -c "$BIN_DIR/dijkstra.elf;$BIN_DIR/sort.elf"
 done
 
